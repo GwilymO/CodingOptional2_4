@@ -32,36 +32,86 @@ public class TripComponent{
 		}
 		return rVal;
 	}
-	public Date getStart() {
+	public String getStart() {
+		if(start!= null) {
+			return start.toString();
+		}
+		else {
+			return "";
+		}
+	}
+	public Date getStartDate() {
 		return start;
 	}
 	
 	public void setStart(Date dIn) {
 		if(dIn != null) {
 			if(end != null && dIn.before(end)) {
-				start = dIn;
+				start = (Date) dIn.clone();
+				//start = new Date(dIn.getTime());
+				//this was my first idea for copying it over which worked perfectly fine apart from two tests,
+				//then I realised the test dates were in MST and my method set it to UTC
+				
 			}
 			else if(end == null) {
-				start = dIn;
+				start = (Date) dIn.clone();
 			}
 		}
 		
 	}
 	
-	public Date getEnd() {
+	public String getEnd() {
+		if(end== null) {
+			return "";	
+		}
+		else {
+			return end.toString();
+		}
+		
+	}
+	public Date getEndDate() {
 		return end;
 	}
 	
 	public void setEnd(Date dIn) {
 		if(dIn != null) {
 			if(start != null && dIn.after(start)) {
-				end = dIn;
+				end = (Date) dIn.clone();
 			}
 			else if(start == null) {
-				end = dIn;
+				end = (Date) dIn.clone();
 			}
 		}
 
+	}
+	
+	public boolean isBefore(TripComponent t) {
+		if(end.before(t.getStartDate())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public boolean overlapsWith(TripComponent t) {
+//		if((end != null && t.getStart() != "" && end.before(t.getStartDate())) || (start != null && t.getEnd() != "" && t.getEndDate().before(start))) {
+//			return false;
+//		}
+		if(start!=null && end != null &&(t.getStart() != "" && start.before(t.getStartDate())&& end.after(t.getStartDate()))) {
+			return true;
+		}
+		else if(start!=null && end != null &&(t.getEnd() != "" && start.before(t.getEndDate())&& end.after(t.getEndDate()))) {
+			return true;
+		}
+		else if(t.getStart() != "" && t.getEnd() != "" &&(start != null && t.getStartDate().before(start)&& t.getEndDate().after(start))) {
+			return true;
+		}
+		else if(t.getStart() != "" && t.getEnd() != "" &&(end!= null && t.getStartDate().before(end)&& t.getEndDate().after(end))) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 }

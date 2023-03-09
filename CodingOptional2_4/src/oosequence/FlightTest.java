@@ -16,27 +16,102 @@ public class FlightTest {
 		return cal.getTime();
 	}
 		
+	// Testing constructors
 	@Test
-	public void test_getter_setter_arrivalAirport_validAirport(){
-		
+	public void test_Constructor_validAirports(){
+		 
 
-		Flight c = new Flight();
-		c.setArrivalAirport("BAC");
-		assertEquals("Set arrival airport to BAC", "BAC", c.getArrivalAirport());
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "YYC", "YVR");
+		assertEquals("Created flight starting in YYC and ending in YVR, testing departure", "YYC", c.getDepartureAirport());
+		assertEquals("Created flight starting in YYC and ending in YVR, testing arrive", "YVR", c.getArrivalAirport());
 	}
 
 	@Test
-	public void test_getter_setter_departureAirport_Invalid_TooShort(){
-		
+	public void test_Constructor_InvalidDeparture(){
+		 
 
-		Flight c = new Flight();
-		c.setDepartureAirport("YY");
-		assertEquals("Set departure airport to YY", "", c.getDepartureAirport());
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "YY", "YVR");
+		assertEquals("Created flight starting in YY and ending in YVR, testing departure", "", c.getDepartureAirport());
+		assertEquals("Created flight starting in YY and ending in YVR, testing arrive", "YVR", c.getArrivalAirport());
+
+		c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "AAAA", "YVR");
+		assertEquals("Created flight starting in AAAA and ending in YVR, testing departure", "", c.getDepartureAirport());
+		assertEquals("Created flight starting in AAAA and ending in YVR, testing arrive", "YVR", c.getArrivalAirport());
+	
+	}
+
+	@Test
+	public void test_Constructor_InvalidArrival(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "CAN", "BB");
+		assertEquals("Created flight starting in CAN and ending in BB, testing departure", "CAN", c.getDepartureAirport());
+		assertEquals("Created flight starting in CAN and ending in BB, testing arrive", "", c.getArrivalAirport());
+
+		c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "CAN", "ABCD");
+		assertEquals("Created flight starting in CAN and ending in ABCD, testing departure", "CAN", c.getDepartureAirport());
+		assertEquals("Created flight starting in CAN and ending in ABCD, testing arrive", "", c.getArrivalAirport());
 	}
 	
 	@Test
-	public void test_getter_setter_setTwice() {
-		Flight c = new Flight();
+	public void test_Constructor_nullArrivalAndDeparture(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), null, null);
+		assertEquals("", c.getDepartureAirport());
+		assertEquals("", c.getArrivalAirport());
+	}
+	
+	@Test 
+	public void testCopyConstructor1()
+	{
+		 
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "LEX", "LCA");
+		Flight c1 = new Flight(c);
+		assertEquals("testing start date", "LEX Fri Dec 28 10:20:00 MST 2018", c1.getStart());
+		assertEquals("testing end date", "LCA Fri Dec 28 10:21:00 MST 2018", c1.getEnd());
+		assertEquals("testing departure airport", "LEX", c1.getDepartureAirport());
+		assertEquals("testing arrival airport", "LCA", c1.getArrivalAirport());
+	}
+
+	@Test 
+	public void testCopyConstructor2()
+	{
+		 
+		Flight c = new Flight(getDate(2018,11,31,23,35), getDate(2019,0,1,10,21), "CAN", "AMS");
+		Flight c1 = new Flight(c);
+		assertEquals("testing start date", "CAN Mon Dec 31 23:35:00 MST 2018", c1.getStart());
+		assertEquals("testing end date", "AMS Tue Jan 01 10:21:00 MST 2019", c1.getEnd());
+		assertEquals("testing departure airport", "CAN", c1.getDepartureAirport());
+		assertEquals("testing arrival airport", "AMS", c1.getArrivalAirport());
+	}
+
+	// test setters and getters
+	
+	public void test_getter_setter_departureAirport_validAirport(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "YYC", "YVR");
+		c.setDepartureAirport("ABR");
+		assertEquals("Changed departure airport from YYC to ABR", "ABR", c.getDepartureAirport());
+	}
+
+	public void test_getter_setter_arrivalAirport_validAirport(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "YYC", "YVR");
+		c.setArrivalAirport("BAC");
+		assertEquals("Changed arrival airport from YVR to BAC", "BAC", c.getDepartureAirport());
+	}
+
+	@Test
+	public void test_getter_setter_departureAirport_Invalid(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "YYY", "YVR");
+		c.setDepartureAirport("YY");
+		assertEquals("Changed departure airport to YY from YYY", "", c.getDepartureAirport());
+
 		c.setDepartureAirport("YYY");
 		c.setDepartureAirport("WXYZ");
 		assertEquals("Changed departure airport from YYY to WXYZ", "", c.getDepartureAirport());
@@ -44,33 +119,33 @@ public class FlightTest {
 	
 	
 	@Test
-	public void test_getter_setter_arrivalAirport_Invalid_TooLong(){
-		Flight c = new Flight();
+	public void test_getter_setter_arrivalAirport_Invalid(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "CAN", "IAB");
+		c.setArrivalAirport("BB");
+		assertEquals("Changed arrival airport from IAB to BB", "", c.getArrivalAirport());
+
+		c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "CAN", "IAB");
 		c.setArrivalAirport("BABA");
-		assertEquals("Set arrival airport to BABA", "", c.getArrivalAirport());
+		assertEquals("Changed arrival airport from IAB to BABA", "", c.getArrivalAirport());
 	}
 	
 	@Test
-	public void test_getter_setter_departureAirport_Invalid_null(){
-		Flight c = new Flight();
+	public void test_getter_setter_departureAirport_null(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "ABC", "DEF");
 		c.setDepartureAirport(null);
-		assertEquals("Set departure airport to null", "", c.getDepartureAirport());
+		assertEquals("Changed departure airport from ABC to null", "", c.getDepartureAirport());
 	}
 	
 	@Test
-	public void test_getter_setter_arrivalAirport_Invalid_null(){
-		Flight c = new Flight();
+	public void test_getter_setter_arrivalAirport_null(){
+		 
+
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "ABC", "DEF");
 		c.setArrivalAirport(null);
-		assertEquals("Set arrival airport to null", "", c.getArrivalAirport());
-	}
-	
-	@Test
-	public void test_getDuration_startOneHourAndTenMinutesBeforeEnd() {
-		
-		Flight c = new Flight();
-		c.setStart(getDate(2018,11,28,10,20));
-		c.setEnd(getDate(2018,11,28,11,30));
-		String expectedDuration = "70 minutes";
-		assertEquals("Flight is one hour and 10 minutes long", expectedDuration, c.getDuration());		
+		assertEquals("Changed arrival airport from DEF to null", "", c.getArrivalAirport());
 	}
 }
