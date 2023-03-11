@@ -22,7 +22,7 @@ public class Flight {
 		if(arrival != null && departure != null && departure.before(arrival)) {
 			rVal = arrival.getTime() - departure.getTime();
 			rVal = rVal/60000;
-			// arrival - departure is in ms, mod 60seconds * 1000 milliseconds to get minute value
+			// arrival - departure is in ms, mod 60seconds * 1000 milliseconds to get minute value.
 		}
 		return rVal;
 	}
