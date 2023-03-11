@@ -1,78 +1,70 @@
 package oosequence;
 import java.util.Date;
 
-public class Flight extends TripComponent{
-	private String departureAirport;
-	private String arrivalAirport;
+public class Flight {
+	private Date departure;
+	private Date arrival;
 	
-	public Flight(){
-		departureAirport = new String("");
-		arrivalAirport = new String("");
+	Flight(Date dep,Date arr){
+		if((dep == null || arr == null) || dep != null && arr != null && dep.before(arr)) {
+			setDeparture(dep);
+			setArrival(arr);
+		}
 	}
 	
-	public Flight(Date dStart, Date dEnd,String depPort, String arrPort) {
-		setStart(dStart);
-		setEnd(dEnd);
-		if(depPort!= null && depPort.length() == 3) {
-			departureAirport = depPort;
+	Flight(Flight f){
+		arrival = f.arrival;
+		departure = f.departure;
+	}
+	
+	public long length() {
+		long rVal = 0;
+		if(arrival != null && departure != null && departure.before(arrival)) {
+			rVal = arrival.getTime() - departure.getTime();
+			rVal = rVal/60000;
+			// arrival - departure is in ms, mod 60seconds * 1000 milliseconds to get minute value
 		}
-		else {
-			departureAirport = "";
+		return rVal;
+	}
+	public Date getDeparture() {
+		Date d = null;
+		if(departure != null) {
+			d = (Date) departure.clone();
+		}
+
+		return d;
+	}
+	
+	public void setDeparture(Date dIn) {
+		if(dIn != null) {
+			if(arrival != null && dIn.before(arrival)) {
+				departure = new Date(dIn.getTime());
+			}
+			else if(arrival == null) {
+				departure = new Date(dIn.getTime());
+			}
 		}
 		
-		if(arrPort!= null && arrPort.length() == 3) {
-			arrivalAirport = arrPort;// this is where all the pirates go on holiday
+	}
+	
+	public Date getArrival() {
+		Date d = null;
+		if(arrival != null) {
+			d = (Date) arrival.clone();
 		}
-		else {
-			arrivalAirport = "";
+		return d;
+	}
+	
+	public void setArrival(Date dIn) {
+		if(dIn != null) {
+			if(departure != null && dIn.after(departure)) {
+				arrival = new Date(dIn.getTime());
+			}
+			else if(departure == null) {
+				arrival = new Date(dIn.getTime());
+			}
 		}
+
 	}
-	
-	public Flight(Flight f) {
-		setStart(f.getStartDate());
-		setEnd(f.getEndDate());
-		departureAirport = f.getDepartureAirport();
-		arrivalAirport = f.getArrivalAirport();
-	}
-	
-	public String getDepartureAirport(){
-		return departureAirport;
-	}
-	
-	public void setDepartureAirport(String s){
-		String dStr = "";
-		if(s!= null && s.length()== 3) {
-			dStr = s;
-		}
-		departureAirport = dStr;
-	}
-	
-	public String getArrivalAirport() {
-		return arrivalAirport;
-	}
-	
-	public void setArrivalAirport(String s) {
-		String aStr = "";
-		if(s!= null && s.length()== 3) {
-			aStr = s;
-		}
-		arrivalAirport = aStr;
-	}
-	
-	public String getDuration() {
-		long l = lengthInSeconds();
-		l = l /60;
-		return (l + " minutes");
-		// I really hope this is the right string format
-	}
-	
-	public String getStart() {
-		return departureAirport +" "+ super.getStart();
-	}
-	public String getEnd() {
-		return arrivalAirport +" "+  super.getEnd();
-	}
-	//this genuinely took me 5 mins to realise I needed to add a space
 
 }
-//COMMENTS FOR THE COMMENT GOD

@@ -3,58 +3,52 @@ package oosequence;
 import java.util.ArrayList;
 
 public class Itinerary {
-	private ArrayList<TripComponent> tripComponents;
+	private ArrayList<Flight> flights;
 	private String name;
 	
 	Itinerary(String iName){
 		name = iName;
-		tripComponents = new ArrayList<TripComponent>();
+		flights = new ArrayList<Flight>();
 	}
 	
-	public void addTripComponent(TripComponent t) {
-		if(tripComponents.size() == 0) {
-			tripComponents.add(t);
+	public void addFlight(Flight f) {
+		if(flights.size() == 0) {
+			flights.add(new Flight(f));
 		}
 		else {
 			boolean nIns = true;
-			for(int i = 0;i<tripComponents.size();i++) {
-				if(t.getEndDate().before(tripComponents.get(i).getStartDate()) && (i<1 || t.getStartDate().after(tripComponents.get(i-1).getEndDate()))) {
+			for(int i = 0;i<flights.size();i++) {
+				if(f.getArrival().before(flights.get(i).getDeparture()) && (i<1 || f.getDeparture().after(flights.get(i-1).getArrival()))) {
 					//if it arrives before position i and leaves after the previous flight OR position i is the first in the list
-					tripComponents.add(i,t);
+					flights.add(i,new Flight(f));
 					nIns = false;
 				}
 			}
-			if(nIns&& t.getStartDate().after(tripComponents.get(tripComponents.size()-1).getEndDate())){
+			if(nIns&& f.getDeparture().after(flights.get(flights.size()-1).getArrival())){
 				//if it leaves after the last flight in the list
-				tripComponents.add(t);
+				flights.add(new Flight(f));
 			}
 		}
 	}
 	
 	public long getTotalLayover() {
 		long l = 0;
-		if(tripComponents.size()<= 1){
+		if(flights.size()<= 1){
 			return 0;
 		}
 		// catch single or empty lists
 		
-		for(int i = 0;i<tripComponents.size()-1;i++) {
+		for(int i = 0;i<flights.size()-1;i++) {
 			long tLong = 0;
-			tLong = tripComponents.get(i+1).getStartDate().getTime() - tripComponents.get(i).getEndDate().getTime();
+			tLong = flights.get(i+1).getDeparture().getTime() - flights.get(i).getArrival().getTime();
 			tLong = tLong / 60000;
 			l += tLong;
 		}
 		return l;
 	}
-	public String toString() {
-		String sOut = name;
-		for(int i = 0;i<tripComponents.size();i++) {
-			sOut = sOut +"\n{}\t{}\t{}".formatted(i,tripComponents.get(i).getStart(),tripComponents.get(i).getEnd());
-		}
-		return sOut;
-	}
-	public ArrayList<TripComponent> getTripComponents() {
-		return tripComponents;
+	
+	public ArrayList<Flight> getFlightList() {
+		return flights;
 	}
 	
 	public String getName() {
