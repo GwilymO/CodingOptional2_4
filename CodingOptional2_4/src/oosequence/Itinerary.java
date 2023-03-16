@@ -47,9 +47,12 @@ public class Itinerary {
 		return l;
 	}
 	public String toString() {
-		String sOut = name;
+		String sOut = name+ "\n";
 		for(int i = 0;i<tripComponents.size();i++) {
-			sOut = sOut +"\n{}\t{}\t{}".formatted(i,tripComponents.get(i).getStart(),tripComponents.get(i).getEnd());
+			//sOut = sOut +"\n%d\t%s\t%s".formatted(i,tripComponents.get(i).getStart(),tripComponents.get(i).getEnd());
+			//This is a perfectly valid way to get the correct output but the tests require a \n at the end of the final entry
+			// so I had to redo the formatting and add a \n to "name" to get the same result
+			sOut = sOut +"%d\t%s\t%s\n".formatted(i,tripComponents.get(i).getStart(),tripComponents.get(i).getEnd());
 		}
 		return sOut;
 	}
