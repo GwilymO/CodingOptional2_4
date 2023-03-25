@@ -20,7 +20,10 @@ public class TripComponent{
 	TripComponent(){
 		start = new Date();
 		end = new Date();
-		end.setTime(start.getTime()+ 3600000); 
+		start = null;
+		end = null;
+		//end.setTime(start.getTime()+ 3600000); 
+		// I don't know why this line was here
 	}
 	
 	public long lengthInSeconds() {
@@ -29,6 +32,7 @@ public class TripComponent{
 			rVal = end.getTime() - start.getTime();
 			rVal = rVal/1000;
 			// arrival - departure is in ms, mod 60seconds * 1000 milliseconds to get minute value
+			//System.out.println(end.getTime()+ "end and "+ start.getTime());
 		}
 		return rVal;
 	}
@@ -85,6 +89,14 @@ public class TripComponent{
 
 	}
 	
+	public String getDuration() {
+		return "";
+	}
+	
+	public String toString() {
+		return("Start: "+getStart()+"\tEnd: "+getEnd()+"\tLength: "+getDuration());
+	}
+	
 	public boolean isBefore(TripComponent t) {
 		if(end.before(t.getStartDate())) {
 			return true;
@@ -112,6 +124,26 @@ public class TripComponent{
 		else {
 			return false;
 		}
+	}
+	
+	protected boolean overlapAllowed() {
+		return false;
+	}
+	
+	public boolean conflictsWith(TripComponent t) {
+		if(!overlapsWith(t)) {
+			return false;
+		}
+		else {
+			if(overlapAllowed()||t.overlapAllowed()) {
+				return false;
+			}
+			else {
+				return true;
+			}
+			
+		}
+		
 	}
 
 }

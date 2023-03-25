@@ -61,8 +61,32 @@ public class Flight extends TripComponent{
 	
 	public String getDuration() {
 		long l = lengthInSeconds();
+		//System.out.println(l+ "seconds");
+		if(l==0) {
+			return("0 minutes");
+		}
 		l = l /60;
-		return (l + " minutes");
+		//time in minutes
+		long h = l /60;
+		long m = l%60;
+		String hString = "";
+		String mString = "";
+		
+		if(h==1) {
+			hString = h + " hour";
+		}
+		else if(h > 1) {
+			hString = h + " hours";
+		}
+		
+		if(m>=1) {
+			mString = m + " minutes";
+		}
+		
+		if(hString != "" && mString != "") {
+			mString = " and "+ mString;
+		}
+		return (hString + mString);
 		// I really hope this is the right string format
 	}
 	
@@ -72,7 +96,9 @@ public class Flight extends TripComponent{
 	public String getEnd() {
 		return arrivalAirport +" "+  super.getEnd();
 	}
-	//this genuinely took me 5 mins to realise I needed to add a space
+	
+	protected boolean overlapAllowed() {
+		return false;
+	}
 
 }
-//COMMENTS FOR THE COMMENT GOD

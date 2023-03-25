@@ -1,5 +1,4 @@
 package oosequence;
-
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -147,5 +146,67 @@ public class FlightTest {
 		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,10,21), "ABC", "DEF");
 		c.setArrivalAirport(null);
 		assertEquals("Changed arrival airport from DEF to null", "", c.getArrivalAirport());
+	}
+	
+	@Test
+	public void test_getDuration_startOneHourAndTenMinutesBeforeEnd() {
+		 
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,11,30), "ABC", "DEF");
+		String expectedDuration = "1 hour and 10 minutes";
+		assertEquals("Flight is one hour and 10 minutes long", expectedDuration, c.getDuration());		
+	}
+
+	@Test
+	public void test_getDuration_startFiveHoursBeforeEndWithOvernight() {
+		 
+		Flight c = new Flight(getDate(2018,11,28,22,20), getDate(2018,11,29,3,20), "ABC", "DEF");
+		String expectedDuration = "5 hours";
+		assertEquals("Flight is five hours long", expectedDuration, c.getDuration());		
+	}
+
+	@Test
+	public void test_getDuration_start45MinutesBeforeEnd() {
+		 
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,11,05), "ABC", "DEF");
+		String expectedDuration = "45 minutes";
+		assertEquals("Flight is 45 minutes long", expectedDuration, c.getDuration());		
+	}
+
+	@Test
+	public void test_getDuration_endNull() {
+		 
+		Flight c = new Flight(getDate(2018,11,28,10,20), null, "ABC", "DEF");
+		String expectedDuration = "0 minutes";
+		assertEquals("Flight is unknown (null end) long", expectedDuration, c.getDuration());		
+	}
+	
+	
+	// test toString (ensuring toString invokes overridden methods.)
+	@Test
+	public void test_toString_endNull() {
+		 
+		Flight c = new Flight(getDate(2018,11,28,10,20), null, "ABC", "DEF");
+		String expectedString = "Start: ABC Fri Dec 28 10:20:00 MST 2018\tEnd: DEF \tLength: 0 minutes";
+		assertEquals("Expecting format: 'Start: <departure airport> <date as string><tab>End: <arrival airport> <date as string><tab>Length: <duration>'", expectedString, c.toString());		
+	}
+	
+	@Test
+	public void test_toString_startOneHourTenMinutesBeforeEnd() {
+		 
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,11,30), "YYC", "YVR");
+		String expectedString = "Start: YYC Fri Dec 28 10:20:00 MST 2018\tEnd: YVR Fri Dec 28 11:30:00 MST 2018\tLength: 1 hour and 10 minutes";
+		assertEquals("Expecting format: 'Start: <departure airport> <date as string><tab>End: <arrival airport> <date as string><tab>Length: <duration>'", expectedString, c.toString());		
+	}	
+	
+	@Test
+	public void test_conflictsWith_OtherAllowsOverlap() {
+		 
+		Flight c = new Flight(getDate(2018,11,28,10,20), getDate(2018,11,28,11,30), "YYC", "YVR");
+		TripComponent other = new TripComponent(getDate(2018,11,28,10,20), getDate(2018,11,28,11,30)){
+			public String getDuration() {return null;}
+			protected boolean overlapAllowed() {return true;}
+		};
+		assertFalse("Assuming no conflict with overlapping TripComponent that allows overlap.", c.conflictsWith(other));
+		assertFalse("Assuming no conflict with overlapping TripComponent that allows overlap.", other.conflictsWith(c));
 	}
 }
