@@ -105,6 +105,16 @@ public class TripComponent{
 			return false;
 		}
 	}
+	
+	public boolean isAfter(TripComponent t) {
+		if(start.after(t.getEndDate())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public boolean overlapsWith(TripComponent t) {
 //		if((end != null && t.getStart() != "" && end.before(t.getStartDate())) || (start != null && t.getEnd() != "" && t.getEndDate().before(start))) {
 //			return false;

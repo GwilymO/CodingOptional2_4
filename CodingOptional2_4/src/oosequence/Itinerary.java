@@ -12,23 +12,45 @@ public class Itinerary {
 	}
 	
 	public void addTripComponent(TripComponent t) {
-		if(tripComponents.size() == 0) {
+		
+		int tSize = tripComponents.size();
+		
+		if(tSize == 0) {
 			tripComponents.add(t);
 		}
 		else {
-			boolean nIns = true;
-			for(int i = 0;i<tripComponents.size();i++) {
-				if(t.getEndDate().before(tripComponents.get(i).getStartDate()) && (i<1 || t.getStartDate().after(tripComponents.get(i-1).getEndDate()))) {
-					//if it arrives before position i and leaves after the previous flight OR position i is the first in the list
-					tripComponents.add(i,t);
-					nIns = false;
-				}
-			}
-			if(nIns&& t.getStartDate().after(tripComponents.get(tripComponents.size()-1).getEndDate())){
-				//if it leaves after the last flight in the list
+			if(t.isAfter(tripComponents.get(tSize-1))) {
 				tripComponents.add(t);
 			}
+			else if(t.isBefore(tripComponents.get(0))) {
+				tripComponents.add(0,t);
+			}
+			else {
+				for(TripComponent tList : tripComponents) {
+					if(t.getStartDate().before(tList.getStartDate())) {
+						if(t.isBefore(tList)) {
+							tripComponents.add(tripComponents.indexOf(tList),t);
+						}
+						else if(t.overlapsWith(tList) && (t.overlapAllowed() || tList.overlapAllowed())) {
+							tripComponents.add(tripComponents.indexOf(tList),t);
+						}
+						
+						break;
+					}
+					else if(t.overlapsWith(tList)&& (t.overlapAllowed() || tList.overlapAllowed())) {
+						tripComponents.add(tripComponents.indexOf(tList)+1,t);
+						break;
+					}
+					else if(t.overlapsWith(tList)&& t.conflictsWith(tList)) {
+						//System.out.println("TripComponents overlap, not allowed");
+						break;
+					}
+
+				}
+			}
 		}
+		//System.out.println(tripComponents.toString());
+		
 	}
 	
 	public long getTotalLayover() {
